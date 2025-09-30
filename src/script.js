@@ -5,9 +5,6 @@ import GUI from 'lil-gui'
 /**
  * Base
  */
-// Debug
-const gui = new GUI()
-
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 
@@ -21,7 +18,72 @@ const cube = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
     new THREE.MeshBasicMaterial()
 )
-scene.add(cube)
+// scene.add(cube)
+
+/**
+ * Galaxy
+ */
+const galaxyInfo = {
+    particleCount: 100000,
+    particleSize: 0.01,
+    radius: 3,
+    color1: "blue"
+}
+
+let galaxyGeometry = null
+let galaxyMaterial = null
+let galaxy = null
+
+const galaxyGenerator = () => {
+
+    //Dispose and remove old galaxy
+    if(galaxy !== null) {
+        galaxyGeometry.dispose()
+        galaxyMaterial.dispose()
+        scene.remove(galaxy)
+    }
+
+    //Geometry
+    galaxyGeometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(galaxyInfo.particleCount * 3);
+
+    for (let i = 0; i < galaxyInfo.particleCount ; i++) {
+        let i3 = i * 3
+        positions[i3] = (Math.random() - 0.5) * galaxyInfo.radius
+        positions[i3 + 1] = (Math.random() - 0.5) * galaxyInfo.radius
+        positions[i3 + 2] = (Math.random() - 0.5) * galaxyInfo.radius
+    }
+
+    galaxyGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3))
+    
+    //Material
+    galaxyMaterial = new THREE.PointsMaterial({
+        size: galaxyInfo.particleSize,
+        color: galaxyInfo.color1,
+        sizeAttenuation: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    })
+
+    //Galaxy
+    galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
+
+    scene.add(galaxy)
+}
+
+galaxyGenerator()
+
+/**
+ * Gui
+ */
+// Debug
+const gui = new GUI()
+
+//Galaxy
+gui.add(galaxyInfo, 'particleCount').min(100).max(1000000).step(100).onFinishChange(galaxyGenerator)
+gui.add(galaxyInfo, 'particleSize').min(0.001).max(0.1).step(0.001).onFinishChange(galaxyGenerator)
+
+
 
 /**
  * Sizes
