@@ -469,35 +469,46 @@ window.addEventListener('resize', () => {
 /**
  * Camera
  */
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 0
-camera.position.y = 0
-camera.position.z = 3
-scene.add(camera)
+// const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+// camera.position.x = 0
+// camera.position.y = 0
+// camera.position.z = 3
+// scene.add(camera)
 
-// group.rotation.x = - Math.PI/ 2
-// group.rotation.y = - Math.PI/ 2
+// gsap.to(group.rotation, {
+//     x: Math.PI / 2,
+//     duration: 4,
+//     delay: 1
+// });
+// gsap.to(group.position, {
+//     z: 3.125,
+//     duration: 4,
+//     delay: 1
+// });
+// Camera setup
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+camera.position.set(0, 3, 3); // New position
+camera.lookAt(0, 0, 0); // Point the camera at the origin (or group's initial position)
+scene.add(camera);
 
-// galaxy1.rotation.x = Math.PI / 2
-// galaxy2.rotation.x = Math.PI / 2
-// gsap.to(camera.position, {
-//     x: 0,
-//     y: 0,
+// // GSAP animations okay ...........................................
+// gsap.to(group.rotation, {
+//     x: Math.PI / 4, // 90-degree rotation around x-axis
+//     duration: 4,
+//     delay: 1
+// });
+// gsap.to(group.position, {
+//     z: Math.PI, // Adjusted to keep group in view (tweak as needed)
+//     duration: 4,
+//     delay: 1
+// });
+// gsap.to(group.position, {
+//     y: Math.PI, // Adjusted to keep group in view (tweak as needed)
 //     duration: 4,
 //     delay: 1
 // });
 
-
-gsap.to(group.rotation, {
-    x: Math.PI / 2,
-    duration: 4,
-    delay: 1
-});
-gsap.to(group.position, {
-    z: 3.125,
-    duration: 4,
-    delay: 1
-});
+// need to play with radius and spin with gsap
 
 
 const controls = new OrbitControls(camera, canvas)
