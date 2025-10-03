@@ -493,6 +493,11 @@ scene.add(camera);
 
 // // GSAP animations okay ...........................................
 // gsap.to(group.rotation, {
+//     y: Math.PI * 0.75, // 90-degree rotation around x-axis
+//     duration: 4,
+//     delay: 1
+// });
+// gsap.to(group.rotation, {
 //     x: Math.PI / 4, // 90-degree rotation around x-axis
 //     duration: 4,
 //     delay: 1
@@ -507,6 +512,21 @@ scene.add(camera);
 //     duration: 4,
 //     delay: 1
 // });
+
+gsap.to(group.rotation, {
+    x: Math.PI / 4,
+    y: Math.PI * 0.75, // 90-degree rotation around x-axis
+    duration: 4,
+    delay: 1
+});
+gsap.to(group.position, {
+    y: Math.PI, // Adjusted to keep group in view (tweak as needed)
+    z: Math.PI,
+    duration: 4,
+    delay: 1
+});
+
+
 
 // need to play with radius and spin with gsap
 
