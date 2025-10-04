@@ -21,7 +21,7 @@
 html, body {
     width: 100%;
     height: 100%;
-    background-color: rgb(0, 0, 0);
+    background-color: #0a0a0a;
     font-family: 'Roboto', system-ui, sans-serif;
     /* smoothing the font */
     -webkit-font-smoothing: antialiased;
@@ -42,8 +42,7 @@ img {
     object-position: center;
 }
 
-.webgl
-{
+.webgl {
     position: fixed;
     top: 0;
     left: 0;
@@ -52,17 +51,31 @@ img {
     height: 100%;
 }
 
+.section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    position: relative;
+    font-family: 'Cabin', sans-serif;
+    /* color: #ffeded; */
+    color: 
+    #edeeff
+    ;
+    text-transform: uppercase;
+    font-size: 7vmin;
+}
+
 /* Responsive Media Queries (Mobile-First) */
 /* Phone view: up to 576px */
-@media (max-width: 576px) {
+/* @media (max-width: 576px) {
     html, body {
         background-color: brown;
     }
 }
 
-/* Tablet view: 577px to 768px */
 @media (min-width: 577px) and (max-width: 768px) {
     html, body {
         background-color: cadetblue;
     }
-}
+} */

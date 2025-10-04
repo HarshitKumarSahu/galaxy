@@ -1,20 +1,18 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
-import gsap from 'gsap'
+import gsap from 'gsap/all'
+import { ScrollTrigger } from 'gsap/ScrollTrigger.js'
+
+gsap.registerPlugin(ScrollTrigger)
 
 /**
  * Base
  */
-// Canvas
 const canvas = document.querySelector('canvas.webgl')
-
-// Scene
 const scene = new THREE.Scene()
-scene.background = new THREE.Color(0x1a1a1a)
 scene.fog = new THREE.Fog(0x1a1a1a, 0, 7)
 
-// Group to hold galaxies
 const group = new THREE.Group()
 scene.add(group)
 
@@ -25,13 +23,13 @@ const galaxyInfo1 = {
     particleCount: 100000,
     particleSize: 0.01,
     radius: 5,
-    innerRadius: 0.25,
+    innerRadius: 0.3,
     branches: 2,
     spin: 2.75,
     randomness: 0.25,
     randomnessPower: 3,
-    insideColor: "#ff5588",
-    outsideColor: "#00fbff",
+    insideColor: "#7d0f25",
+    outsideColor: "#1b3984",
 }
 
 let galaxyGeometry1 = null
@@ -39,7 +37,7 @@ let galaxyMaterial1 = null
 let galaxy1 = null
 
 const galaxyGenerator1 = () => {
-    if (galaxy1 !== null) {
+    if(galaxy1 !== null) {
         galaxyGeometry1.dispose()
         galaxyMaterial1.dispose()
         group.remove(galaxy1)
@@ -97,19 +95,19 @@ galaxyGenerator1()
  * Galaxy 2
  */
 const galaxyInfo2 = {
-    particleCount: 80000,
-    particleSize: 0.015,
-    radius: 4,
-    innerRadius: 0.3,
-    branches: 3,
-    spin: -2.0,
-    randomness: 0.3,
-    randomnessPower: 2.5,
-    insideColor: "#88ff55",
-    outsideColor: "#ff00ff",
-    positionX: 2,
+    particleCount: 30000,
+    particleSize: 0.0075,
+    radius: 2,
+    innerRadius: 0.275,
+    branches: 20,
+    spin: 5,
+    randomness: 0.25,
+    randomnessPower: 3,
+    insideColor: "#8c418e",
+    outsideColor: "#7d0f25",
+    positionX: 0,
     positionY: 0,
-    positionZ: 2
+    positionZ: 0
 }
 
 let galaxyGeometry2 = null
@@ -117,7 +115,7 @@ let galaxyMaterial2 = null
 let galaxy2 = null
 
 const galaxyGenerator2 = () => {
-    if (galaxy2 !== null) {
+    if(galaxy2 !== null) {
         galaxyGeometry2.dispose()
         galaxyMaterial2.dispose()
         group.remove(galaxy2)
@@ -172,61 +170,9 @@ const galaxyGenerator2 = () => {
 galaxyGenerator2()
 
 /**
- * GSAP Animation
- */
-gsap.to(group.rotation, {
-    x: Math.PI / 2,
-    duration: 4,
-    delay: 1
-})
-gsap.to(group.position, {
-    z: 3.125,
-    duration: 4,
-    delay: 1
-})
-
-/**
  * Gui
  */
 const gui = new GUI()
-
-// Galaxy 1 Controls
-const galaxy1Folder = gui.addFolder('Galaxy 1')
-galaxy1Folder.add(galaxyInfo1, 'particleCount').min(10000).max(500000).step(10000).onFinishChange(galaxyGenerator1)
-galaxy1Folder.add(galaxyInfo1, 'particleSize').min(0.001).max(0.05).step(0.001).onFinishChange(galaxyGenerator1)
-galaxy1Folder.add(galaxyInfo1, 'radius').min(1).max(20).step(1).onFinishChange(galaxyGenerator1)
-galaxy1Folder.add(galaxyInfo1, 'innerRadius').min(0).max(20).step(0.1).onFinishChange(galaxyGenerator1)
-galaxy1Folder.add(galaxyInfo1, 'branches').min(1).max(20).step(1).onFinishChange(galaxyGenerator1)
-galaxy1Folder.add(galaxyInfo1, 'spin').min(-5).max(5).step(0.0001).onFinishChange(galaxyGenerator1)
-galaxy1Folder.add(galaxyInfo1, 'randomness').min(0).max(2.5).step(0.0001).onFinishChange(galaxyGenerator1)
-galaxy1Folder.add(galaxyInfo1, 'randomnessPower').min(0).max(10).step(0.0001).onFinishChange(galaxyGenerator1)
-galaxy1Folder.addColor(galaxyInfo1, 'insideColor').onFinishChange(galaxyGenerator1)
-galaxy1Folder.addColor(galaxyInfo1, 'outsideColor').onFinishChange(galaxyGenerator1)
-
-// Galaxy 2 Controls
-const galaxy2Folder = gui.addFolder('Galaxy 2')
-galaxy2Folder.add(galaxyInfo2, 'particleCount').min(10000).max(500000).step(10000).onFinishChange(galaxyGenerator2)
-galaxy2Folder.add(galaxyInfo2, 'particleSize').min(0.001).max(0.05).step(0.001).onFinishChange(galaxyGenerator2)
-galaxy2Folder.add(galaxyInfo2, 'radius').min(1).max(20).step(1).onFinishChange(galaxyGenerator2)
-galaxy2Folder.add(galaxyInfo2, 'innerRadius').min(0).max(20).step(0.1).onFinishChange(galaxyGenerator2)
-galaxy2Folder.add(galaxyInfo2, 'branches').min(1).max(20).step(1).onFinishChange(galaxyGenerator2)
-galaxy2Folder.add(galaxyInfo2, 'spin').min(-5).max(5).step(0.0001).onFinishChange(galaxyGenerator2)
-galaxy2Folder.add(galaxyInfo2, 'randomness').min(0).max(2.5).step(0.0001).onFinishChange(galaxyGenerator2)
-galaxy2Folder.add(galaxyInfo2, 'randomnessPower').min(0).max(10).step(0.0001).onFinishChange(galaxyGenerator2)
-galaxy2Folder.addColor(galaxyInfo2, 'insideColor').onFinishChange(galaxyGenerator2)
-galaxy2Folder.addColor(galaxyInfo2, 'outsideColor').onFinishChange(galaxyGenerator2)
-galaxy2Folder.add(galaxyInfo2, 'positionX').min(-10).max(10).step(0.1).onFinishChange(galaxyGenerator2)
-galaxy2Folder.add(galaxyInfo2, 'positionY').min(-10).max(10).step(0.1).onFinishChange(galaxyGenerator2)
-galaxy2Folder.add(galaxyInfo2, 'positionZ').min(-10).max(10).step(0.1).onFinishChange(galaxyGenerator2)
-
-// Fog Controls
-const fogFolder = gui.addFolder('Fog')
-fogFolder.addColor({ color: '#1a1a1a' }, 'color').onChange((value) => {
-    scene.fog.color.set(value)
-    scene.background.set(value)
-})
-fogFolder.add(scene.fog, 'near').min(0).max(10).step(0.1)
-fogFolder.add(scene.fog, 'far').min(5).max(50).step(0.1)
 
 /**
  * Sizes
@@ -249,10 +195,68 @@ window.addEventListener('resize', () => {
  * Camera
  */
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 3
-camera.position.y = 3
-camera.position.z = 3
+camera.position.set(0, 3, 3)
+camera.lookAt(0, 0, 0)
 scene.add(camera)
+
+gui.add(camera.position, "x").min(0).max(10)
+
+/**
+ * Scroll-based Animations
+ */
+const sections = document.querySelectorAll('.section')
+
+// Animate group rotation and position over both sections
+gsap.to(group.rotation, {
+    x: Math.PI / 4,
+    y: Math.PI * 0.75,
+    scrollTrigger: {
+        trigger: sections[0],
+        endTrigger: sections[1],
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+        markers: true // Set to true for debugging
+    }
+})
+
+gsap.to(group.position, {
+    y: Math.PI,
+    z: Math.PI,
+    scrollTrigger: {
+        trigger: sections[0],
+        endTrigger: sections[1],
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1
+    }
+})
+
+// // Animate galaxy 1 properties in first section
+// gsap.to(galaxyInfo1, {
+//     radius: 7,
+//     spin: 4,
+//     scrollTrigger: {
+//         trigger: sections[0],
+//         start: 'top top',
+//         end: 'bottom bottom',
+//         scrub: 1,
+//         onUpdate: () => galaxyGenerator1()
+//     }
+// })
+
+// // Animate galaxy 2 properties in second section
+// gsap.to(galaxyInfo2, {
+//     radius: 3,
+//     spin: 7,
+//     scrollTrigger: {
+//         trigger: sections[1],
+//         start: 'top top',
+//         end: 'bottom bottom',
+//         scrub: 1,
+//         onUpdate: () => galaxyGenerator2()
+//     }
+// })
 
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
@@ -261,7 +265,9 @@ controls.enableDamping = true
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+    canvas: canvas,
+    antialias: true,
+    alpha: true
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -273,6 +279,8 @@ const clock = new THREE.Clock()
 
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
+    galaxy1.rotation.y = elapsedTime * 0.1
+    galaxy2.rotation.y = elapsedTime * 0.1
     controls.update()
     renderer.render(scene, camera)
     window.requestAnimationFrame(tick)
