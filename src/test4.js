@@ -187,10 +187,10 @@ const galaxyGenerator2 = () => {
 
 galaxyGenerator2()
 
-// /**
-//  * Gui
-//  */
-// const gui = new GUI()
+/**
+ * Gui
+ */
+const gui = new GUI()
 
 /**
  * Sizes
@@ -212,48 +212,50 @@ window.addEventListener('resize', () => {
 /**
  * Camera
  */
-const startXPos = 7;
-const endXPos = 0;
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-camera.position.set(startXPos, 3, 3);
-camera.lookAt(0, 0, 0);
-scene.add(camera);
+const startXPos = 7
+const endXPos = 0
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+camera.position.set(startXPos, 3, 3)
+camera.lookAt(0, 0, 0)
+scene.add(camera)
 
-// gui.add(camera.position, "x").min(0).max(10);
+gui.add(camera.position, "x").min(0).max(10)
 
 function landingAnimation(domElem, splitType = "words") {
-    gsap.set(domElem, { opacity: 0, top: -domElem.offsetHeight });
+    gsap.set(domElem, { opacity: 0, top: -domElem.offsetHeight })
 
     const split = new SplitText(domElem, { 
         type: splitType,
         tag: "span"
-    });
+    })
 
-    gsap.set(split[splitType], { y: "100%" });
+    gsap.set(split[splitType], { y: "100%" })
 
-    return gsap.to(split[splitType], {
+    const tl = gsap.timeline()
+    tl.to(split[splitType], {
         y: 0,
         opacity: 1,
         duration: 1,
         stagger: 0.05,
         ease: "expo.out",
-        onStart: () => gsap.set(domElem, { opacity: 1 }),
-        onReverseComplete: () => gsap.set(domElem, { opacity: 0 }) // Reset opacity when reversing
-    });
+        onStart: () => gsap.set(domElem, { opacity: 1 })
+    })
+
+    return tl
 }
 
 // intro animations
-const body = document.querySelector("body");
-body.style.overflow = "hidden";
-const sections = document.querySelectorAll('.section');
-const secs = document.querySelectorAll(".sec");
+const body = document.querySelector("body")
+body.style.overflow = "hidden"
+const sections = document.querySelectorAll('.section')
+const secs = document.querySelectorAll(".sec")
 
-const pSec1 = secs[0].querySelectorAll("p");
-const pSec3 = secs[1].querySelectorAll("p");
+const pSec1 = secs[0].querySelectorAll("p")
+const pSec3 = secs[1].querySelectorAll("p")
 
-sections[0].style.display = "none";
-sections[1].style.display = "none";
-sections[2].style.display = "none";
+sections[0].style.display = "none"
+sections[1].style.display = "none"
+sections[2].style.display = "none"
 
 document.querySelector(".btn").addEventListener("click", () => {
     gsap.to(".btn", {
@@ -261,27 +263,45 @@ document.querySelector(".btn").addEventListener("click", () => {
         display: "none",
         duration: 0.5,
         onComplete: () => {
-            sections[0].style.display = "flex";
-            sections[1].style.display = "flex";
-            sections[2].style.display = "flex";
+            sections[0].style.display = "flex"
+            sections[1].style.display = "flex"
+            sections[2].style.display = "flex"
 
-            sections[0].style.height = "100vh";
-            sections[1].style.height = "100vh";
-            sections[2].style.height = "100vh";
+            sections[0].style.height = "100vh"
+            sections[1].style.height = "100vh"
+            sections[2].style.height = "100vh"
         }
-    });
+    })
 
     gsap.to(camera.position, {
         x: endXPos,
         duration: 1.125,
         ease: "expoScale(0.5,7,none)",
         onComplete: () => {
-            body.style.overflow = "auto";
+            body.style.overflow = "auto"
 
-            const tlSec1_0 = landingAnimation(pSec1[0], "words");
-            const tlSec1_1 = landingAnimation(pSec1[1], "words");
-            const tlSec1_2 = landingAnimation(pSec1[2], "words");
-            const tlSec1_3 = landingAnimation(pSec1[3], "words");
+            // Create a timeline for section 1 animations to make them reversible
+            const sec1Timeline = gsap.timeline({
+                scrollTrigger: {
+                    trigger: sections[0],
+                    start: 'top top',
+                    end: 'top 30%',
+                    scrub: true,
+                    toggleActions: 'play none none reverse', // Reverse on scroll back
+                    markers: true, // Set to false in production
+                }
+            })
+
+            // Add opacity animation for secs[0]
+            sec1Timeline.to(secs[0], {
+                opacity: 0,
+                duration: 1,
+                ease: "power2.inOut"
+            })
+
+            // Add text animations for pSec1[0] and pSec1[1]
+            sec1Timeline.add(landingAnimation(pSec1[0], "words"), 0)
+            sec1Timeline.add(landingAnimation(pSec1[1], "words"), 0)
 
             // Scroll-based animations for group rotation and position
             gsap.to(group.rotation, {
@@ -293,9 +313,9 @@ document.querySelector(".btn").addEventListener("click", () => {
                     start: 'top top',
                     end: 'bottom bottom',
                     scrub: 1,
-                    // markers: false // Set to false in production
+                    markers: true, // Set to false in production
                 }
-            });
+            })
             gsap.to(group.position, {
                 y: Math.PI,
                 z: Math.PI,
@@ -304,185 +324,29 @@ document.querySelector(".btn").addEventListener("click", () => {
                     endTrigger: sections[2],
                     start: 'top top',
                     end: 'bottom bottom',
-                    scrub: 1
+                    scrub: 1,
                 }
-            });
+            })
 
-            // ScrollTrigger for section 1 animations with reverse
-            gsap.to(pSec1[0], {
-                scrollTrigger: {
-                    trigger: sections[0],
-                    start: 'top -70%',
-                    toggleActions: 'play reverse reverse reverse', // Reverse animation on scroll up
-                    // markers: false // Set to false in production
-                    onEnter: () => {
-                        gsap.to(pSec1, { opacity: 0 });
-                    },
-                    onEnterBack: () => {
-                        gsap.to(pSec1, { opacity: 1 });
-                        tlSec1_0.play();
-                        tlSec1_1.play();
-                        tlSec1_2.play();
-                        tlSec1_3.play();
-                    }
-                }
-            });
-
-            // ScrollTrigger for section 3 animations with reverse
+            // Separate ScrollTrigger for section 3 animations at 50% visibility
             gsap.to(pSec3[0], {
                 scrollTrigger: {
                     trigger: sections[2],
-                    start: 'top 50%',
-                    end: 'bottom 110%', 
-                    toggleActions: 'play reverse reverse reverse', // Reverse animation on scroll up
-                    // markers: true,
+                    start: 'top 30%', // Trigger when top of section 2 is at 50% of viewport height
+                    toggleActions: 'play none none reverse', // Reverse on scroll back
+                    markers: true, // Set to false in production
                     onEnter: () => {
-                        const tlSec3_0 = landingAnimation(pSec3[1], "words");
-                        const tlSec3_1 = landingAnimation(pSec3[0], "words");
-                        const tlSec3_2 = landingAnimation(pSec3[2], "words");
-                        const tlSec3_3 = landingAnimation(pSec3[3], "words");
-                        gsap.to(pSec3, { opacity: 1 });
-                    },
-                    onEnterBack: () => {
-                        // gsap.to(pSec3, { opacity: 0 });
-                        gsap.to(pSec3, { opacity: 0 });
-                        tlSec1_0.play();
-                        tlSec1_1.play();
-                        tlSec1_2.play();
-                        tlSec1_3.play();
+                        landingAnimation(pSec3[1], "words")
+                        landingAnimation(pSec3[0], "words")
                     }
                 }
-            });
+            })
         }
-    });
-});
-
-// const startXPos = 7
-// const endXPos = 0
-// const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-// camera.position.set(startXPos, 3, 3)
-// camera.lookAt(0, 0, 0)
-// scene.add(camera)
-
-// gui.add(camera.position, "x").min(0).max(10)
-
-// function landingAnimation(domElem, splitType = "words") {
-//     gsap.set(domElem, { opacity: 0, top: -domElem.offsetHeight })
-
-//     const split = new SplitText(domElem, { 
-//         type: splitType,
-//         tag: "span"
-//     })
-
-//     gsap.set(split[splitType], { y: "100%" })
-
-//     gsap.to(split[splitType], {
-//         y: 0,
-//         opacity: 1,
-//         duration: 1,
-//         stagger: 0.05,
-//         ease: "expo.out",
-//         yoyo: true,
-//         onStart: () => gsap.set(domElem, { opacity: 1 }),
-//     })
-// }
-
-// // intro animations
-// const body = document.querySelector("body")
-// body.style.overflow = "hidden"
-// const sections = document.querySelectorAll('.section')
-// const secs = document.querySelectorAll(".sec")
-
-// const pSec1 = secs[0].querySelectorAll("p")
-// const pSec3 = secs[1].querySelectorAll("p")
-
-// sections[0].style.display = "none"
-// sections[1].style.display = "none"
-// sections[2].style.display = "none"
-
-// document.querySelector(".btn").addEventListener("click", () => {
-//     gsap.to(".btn", {
-//         opacity: 0,
-//         display: "none",
-//         duration: 0.5,
-//         onComplete: () => {
-//             sections[0].style.display = "flex"
-//             sections[1].style.display = "flex"
-//             sections[2].style.display = "flex"
-
-//             sections[0].style.height = "100vh"
-//             sections[1].style.height = "100vh"
-//             sections[2].style.height = "100vh"
-//         }
-//     })
-
-//     gsap.to(camera.position, {
-//         x: endXPos,
-//         duration: 1.125,
-//         ease: "expoScale(0.5,7,none)",
-//         onComplete: () => {
-//             body.style.overflow = "auto"
-
-//             landingAnimation(pSec1[1], "words")
-//             landingAnimation(pSec1[0], "words")
-
-//             // Scroll-based animations for group rotation and position
-//             gsap.to(group.rotation, {
-//                 x: Math.PI / 4,
-//                 y: Math.PI * 0.75,
-//                 scrollTrigger: {
-//                     trigger: sections[0],
-//                     endTrigger: sections[2],
-//                     start: 'top top',
-//                     end: 'bottom bottom',
-//                     scrub: 1,
-//                     // markers: true, // Set to false in production
-//                 }
-//             })
-//             gsap.to(group.position, {
-//                 y: Math.PI,
-//                 z: Math.PI,
-//                 scrollTrigger: {
-//                     trigger: sections[0],
-//                     endTrigger: sections[2],
-//                     start: 'top top',
-//                     end: 'bottom bottom',
-//                     scrub: 1,
-//                 }
-//             })
-
-//             // Separate ScrollTrigger for section 3 animations at 50% visibility
-//             gsap.to(pSec3[0], {
-//                 scrollTrigger: {
-//                     trigger: sections[2],
-//                     start: 'top 30%', // Trigger when top of section 2 is at 50% of viewport height
-//                     toggleActions: 'play none none none', // Play animation on enter
-//                     // markers: true, // Set to false in production
-//                     onEnter: () => {
-//                         landingAnimation(pSec3[1], "words")
-//                         landingAnimation(pSec3[0], "words")
-//                     }
-//                 }
-//             })
-//             gsap.to(pSec1[0], {
-//                 scrollTrigger: {
-//                     trigger: sections[0],
-//                     start: 'top -70%', // Trigger when top of section 2 is at 50% of viewport height
-//                     toggleActions: 'play none none none', // Play animation on enter
-//                     markers: true, // Set to false in production
-//                     onEnter: () => {
-//                         gsap.to(pSec1, {
-//                             opacity: 0
-//                         })
-//                     }
-//                 }
-//             })
-//         }
-//     })
-// })
+    })
+})
 
 const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = false
+controls.enableDamping = true
 
 /**
  * Renderer
