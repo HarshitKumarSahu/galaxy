@@ -2,7 +2,9 @@
 
 Welcome to the Galaxy Visualization with Scroll Animations project! This is an immersive web-based 3D experience built using Three.js, featuring procedurally generated galaxy particle systems with smooth scroll-triggered animations. The project leverages GSAP for advanced animations, Lenis for smooth scrolling, and WebGL for rendering, creating an engaging cosmic journey through animated galaxies.
 
-[Preview](./static//Screenshot.jpg)
+## Preview
+
+![Screenshot](./static//Screenshot.jpg)
 
 ## Features
 
